@@ -6,7 +6,7 @@
 
 set -eo pipefail
 
-# current_branch=$(git rev-parse --abbrev-ref HEAD)
+
 
 #if [ -z "$1" ]; then
  # echo ERROR: Must have annotation 
@@ -21,14 +21,21 @@ set -eo pipefail
 version=$1                                                           
 message=$2                                                                               
 
-echo Current branch: "$current_branch".
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+tag=$(git describe --tags `git rev-list --tags --max-count=1`)
 
+echo Current branch: "$current_branch".
+echo Latest tag is: "$tag"
 read -p "Please enter the version number: " annotation
 echo "You entered: $version"
 read -p "Please enter your message: " message
 echo "You entered: $message"
 
 git tag -a "$version" -m "$message"
+
+
+
+
 
 
 #ticket_prefix=$1                                                            # ENG-123
