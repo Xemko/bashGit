@@ -1,6 +1,7 @@
 #! /bin/bash
 
-# A script to quickly create a branch, add a commit, and push it up. 
+# A script to create TAG.
+# a branch, add a commit, push it. 
 # Casper - add to ~/.zshrc - alias gtag="PATH TO THE SCRIPT"
 
 set -eo pipefail
