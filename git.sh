@@ -18,22 +18,52 @@ set -eo pipefail
 #  exit 1
 # fi
 
-version=$1                                                           
-message=$2                                                                               
+#version=$1
+#message=$2
+
+tag="" # The tag name to create
+
+version="1"
+suffix="-qa-"
+last_version="1"
 
 current_branch=$(git rev-parse --abbrev-ref HEAD)
-tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+echo "Current branch is: $current_branch"
 
-echo Current branch: "$current_branch".
-echo Latest tag is: "$tag"
-read -p "Please enter the version number: " annotation
-echo "You entered: $version"
-read -p "Please enter your message: " message
-echo "You entered: $message"
+last_tag=$(git describe --tags --abbrev=0 $current_branch)
 
-git tag -a "$version" -m "$message"
+# Check if last tag exist and the tag ends with a digit
+if [[ $last_tag =~ [0-9]$ ]]; then
+  last_version=${BASH_REMATCH[0]}
+  version=$((last_version + 1))
+fi
 
+if [ -n "$last_tag" ]; then
+  echo -e "\nLatest tag is: $last_tag"
+fi
 
+# Example: branch\name-qa-1 -> branch_name-qa-1
+suggested_tag=$(echo $current_branch | sed -r 's/\//_/g')
+suggested_tag=$suggested_tag$suffix$version
+
+echo -e "ֿֿֿֿֿ\nThe next tag suggestion is [$suggested_tag]."
+read -e -p "Press Enter or type the tag name: " input
+# If the user just presses Enter, use the default value
+tag="${input:-$suggested_tag}"
+
+suggested_msg="Tag for QA"
+
+echo -e "ֿֿֿֿֿ\nThe message suggestion is [$suggested_msg]."
+read -e -p "Press Enter or type the message: " input
+# If the user just presses Enter, use the default value
+message="${input:-$suggested_msg}"
+
+echo -e "\nCreating the tag:"
+echo -e "git tag -a \"$tag\" -m \"$message\""
+
+# Execute the git command
+git tag -a "$tag" -m "$message"
+git push origin "$tag"
 
 
 
