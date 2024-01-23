@@ -33,7 +33,7 @@ echo "Current branch is: $current_branch"
 last_tag=$(git describe --tags --abbrev=0 $current_branch)
 
 # Check if last tag exist and the tag ends with a digit
-if [[ $last_tag =~ [0-9]$ ]]; then
+if [[ $last_tag =~ [0-9]+$ ]]; then
   last_version=${BASH_REMATCH[0]}
   version=$((last_version + 1))
 fi
